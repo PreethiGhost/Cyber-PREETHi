@@ -436,3 +436,41 @@ elif choice == '16':
 
 else:
     print(f"{R}[!] Invalid Choice! Please run the tool again and select 1-16.{RES}")
+# OSINT Lookup Module Integration
+def osint_lookup():
+    print("\n[+] --- CYBER-PREETHI OSINT MODULE --- [+]")
+    target = input("Enter target domain or website (e.g., example.com): ").strip()
+    
+    if not target:
+        print("[-] Target cannot be empty!")
+        return
+
+    try:
+        print(f"\n[I] Resolving IP address for: {target}")
+        ip_address = socket.gethostbyname(target)
+        print(f"[+] Target IP: {ip_address}")
+        
+        if not target.startswith("http"):
+            url = f"http://{target}"
+        else:
+            url = target
+            
+        print(f"\n[I] Fetching HTTP headers from: {url}")
+        req = urllib.request.Request(
+            url, 
+            headers={'User-Agent': 'Mozilla/5.0 (Cyber-PREETHi Tool)'}
+        )
+        
+        try:
+            with urllib.request.urlopen(req, timeout=5) as response:
+                print(f"[+] Status Code: {response.getcode()}")
+                print("[+] Server Headers:")
+                for header, value in response.headers.items():
+                    print(f"    - {header}: {value}")
+        except Exception as e:
+            print(f"[-] Could not fetch HTTP headers: {e}")
+            
+    except socket.gaierror:
+        print(f"[-] Error: Could not resolve domain {target}. Check the URL.")
+    except Exception as e:
+        print(f"[-] An error occurred: {e}")
